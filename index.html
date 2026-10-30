@@ -323,7 +323,6 @@ footer {
 
 <header>
   <div class="logo">Nova Store</div>
-
   <div class="cart-badge">
     🛒 Cart: <span id="cartCount">0</span>
   </div>
@@ -339,7 +338,6 @@ footer {
 </section>
 
 <main>
-
   <input
     id="search"
     class="search"
@@ -355,14 +353,11 @@ footer {
   </div>
 
   <p id="resultCount"></p>
-
   <div class="grid" id="productGrid"></div>
 
   <section class="cart-box">
     <h2>Your Shopping Cart</h2>
-
     <p id="cartMessage">Your cart is empty.</p>
-
     <ul id="cartItems"></ul>
 
     <p class="total">
@@ -373,7 +368,6 @@ footer {
       Order via WhatsApp
     </button>
   </section>
-
 </main>
 
 <footer>
@@ -383,7 +377,6 @@ footer {
 <script>
 "use strict";
 
-// PRODUCT DATA
 const products = [
   {
     id: 1,
@@ -391,7 +384,7 @@ const products = [
     price: 2499,
     category: "Electronics",
     icon: "🎧",
-    image: "images.jpg"
+    image: "images/headphone.jpg"
   },
   {
     id: 2,
@@ -399,7 +392,7 @@ const products = [
     price: 3499,
     category: "Electronics",
     icon: "⌚",
-    image: ""
+    image: "images/watch.jpg"
   },
   {
     id: 3,
@@ -407,7 +400,7 @@ const products = [
     price: 1799,
     category: "Accessories",
     icon: "🎒",
-    image: ""
+    image: "images/backpack.jpg"
   },
   {
     id: 4,
@@ -415,7 +408,7 @@ const products = [
     price: 1999,
     category: "Electronics",
     icon: "🔊",
-    image: ""
+    image: "images/speaker.jpg"
   },
   {
     id: 5,
@@ -423,7 +416,7 @@ const products = [
     price: 799,
     category: "Accessories",
     icon: "🧴",
-    image: ""
+    image: "images/bottle.jpg"
   },
   {
     id: 6,
@@ -431,50 +424,39 @@ const products = [
     price: 999,
     category: "Accessories",
     icon: "📱",
-    image: ""
+    image: "images/cover.jpg"
   }
 ];
 
-// SHOPPING CART
 const cart = {};
 let activeCategory = "All";
-
-// WhatsApp number in international format
 const whatsappNumber = "923362567984";
 
-// FORMAT PRICE
 function money(amount) {
   return "Rs. " + amount.toLocaleString("en-PK");
 }
 
-// FIND PRODUCT
 function findProduct(id) {
   return products.find(product => product.id === Number(id));
 }
 
-// PRODUCT IMAGE OR FALLBACK ICON
 function renderPicture(product) {
-  if (product.image) {
-    return `
-      <img
-        src="${product.image}"
-        alt="${product.name}"
-        onerror="
-          this.style.display='none';
-          this.nextElementSibling.style.display='block';
-        "
-      >
-      <span style="display:none">${product.icon}</span>
-    `;
-  }
-
-  return `<span>${product.icon}</span>`;
+  return `
+    <img
+      src="${product.image}"
+      alt="${product.name}"
+      onerror="
+        this.style.display='none';
+        this.nextElementSibling.style.display='block';
+      "
+    >
+    <span style="display:none">${product.icon}</span>
+  `;
 }
 
-// DISPLAY PRODUCTS
 function renderProducts() {
-  const searchInput = document.getElementById("search");
-  const searchText = searchInput.value.trim().toLowerCase();
+  const searchText = document.getElementById("search")
+    .value.trim().toLowerCase();
 
   const filtered = products.filter(product => {
     const categoryMatch =
@@ -495,9 +477,7 @@ function renderProducts() {
 
   if (filtered.length === 0) {
     grid.innerHTML = `
-      <div class="empty">
-        No products found. Try another search.
-      </div>
+      <div class="empty">No products found. Try another search.</div>
     `;
     return;
   }
@@ -507,59 +487,29 @@ function renderProducts() {
 
     return `
       <article class="card">
-
-        <div class="picture">
-          ${renderPicture(product)}
-        </div>
+        <div class="picture">${renderPicture(product)}</div>
 
         <div class="details">
-
           <p class="category">${product.category}</p>
-
           <h3>${product.name}</h3>
-
           <p class="price">${money(product.price)}</p>
 
           <div class="actions">
-
             ${
               quantity === 0
-                ? `
-                  <button
-                    class="add"
-                    data-add="${product.id}"
-                  >
-                    Add to Cart
-                  </button>
-                `
-                : `
-                  <div class="quantity-control">
-
-                    <button
-                      class="qty-btn"
-                      data-minus="${product.id}"
-                      aria-label="Decrease quantity"
-                    >−</button>
-
-                    <span class="qty-number">${quantity}</span>
-
-                    <button
-                      class="qty-btn"
-                      data-plus="${product.id}"
-                      aria-label="Increase quantity"
-                    >+</button>
-
-                  </div>
-                `
+                ? `<button class="add" data-add="${product.id}">
+                     Add to Cart
+                   </button>`
+                : `<div class="quantity-control">
+                     <button class="qty-btn" data-minus="${product.id}">−</button>
+                     <span class="qty-number">${quantity}</span>
+                     <button class="qty-btn" data-plus="${product.id}">+</button>
+                   </div>`
             }
 
-            <button
-              class="whatsapp"
-              data-order="${product.id}"
-            >
+            <button class="whatsapp" data-order="${product.id}">
               WhatsApp
             </button>
-
           </div>
         </div>
       </article>
@@ -567,82 +517,54 @@ function renderProducts() {
   }).join("");
 }
 
-// DISPLAY CART
 function renderCart() {
   const entries = Object.entries(cart)
     .filter(([, quantity]) => quantity > 0);
 
   const count = entries.reduce(
-    (sum, [, quantity]) => sum + quantity,
-    0
+    (sum, [, quantity]) => sum + quantity, 0
   );
 
   const total = entries.reduce((sum, [id, quantity]) => {
     const product = findProduct(id);
-
-    return product
-      ? sum + product.price * quantity
-      : sum;
+    return product ? sum + product.price * quantity : sum;
   }, 0);
 
   document.getElementById("cartCount").textContent = count;
-
-  document.getElementById("cartTotal").textContent =
-    money(total);
+  document.getElementById("cartTotal").textContent = money(total);
 
   document.getElementById("cartMessage").textContent =
-    entries.length
-      ? "Review your items below."
-      : "Your cart is empty.";
+    entries.length ? "Review your items below." : "Your cart is empty.";
 
   document.getElementById("cartItems").innerHTML =
     entries.map(([id, quantity]) => {
       const product = findProduct(id);
-
       if (!product) return "";
 
       return `
         <li>
-          <span>
-            ${product.name} × ${quantity}
-            — ${money(product.price * quantity)}
-          </span>
-
-          <button
-            class="remove"
-            data-remove="${id}"
-          >
-            Remove
-          </button>
+          <span>${product.name} × ${quantity} — ${money(product.price * quantity)}</span>
+          <button class="remove" data-remove="${id}">Remove</button>
         </li>
       `;
     }).join("");
 }
 
-// OPEN WHATSAPP
 function openWhatsApp(message) {
-  const url =
-    "https://wa.me/" +
-    whatsappNumber +
-    "?text=" +
-    encodeURIComponent(message);
+  const url = "https://wa.me/" + whatsappNumber +
+    "?text=" + encodeURIComponent(message);
 
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
-// ADD ONE ITEM
 function addToCart(id) {
-  const product = findProduct(id);
-
-  if (!product) return;
+  if (!findProduct(id)) return;
 
   cart[id] = (cart[id] || 0) + 1;
-
   renderProducts();
   renderCart();
 }
 
-// DECREASE ONE ITEM
 function decreaseQuantity(id) {
   if (!cart[id]) return;
 
@@ -656,13 +578,10 @@ function decreaseQuantity(id) {
   renderCart();
 }
 
-// SEARCH PRODUCTS
 document.getElementById("search").addEventListener(
-  "input",
-  renderProducts
+  "input", renderProducts
 );
 
-// CATEGORY FILTERS
 document.querySelectorAll(".filter").forEach(button => {
   button.addEventListener("click", () => {
     activeCategory = button.dataset.category;
@@ -675,10 +594,8 @@ document.querySelectorAll(".filter").forEach(button => {
   });
 });
 
-// PRODUCT BUTTONS
 document.getElementById("productGrid").addEventListener(
-  "click",
-  event => {
+  "click", event => {
     const addButton = event.target.closest("[data-add]");
     const plusButton = event.target.closest("[data-plus]");
     const minusButton = event.target.closest("[data-minus]");
@@ -701,37 +618,29 @@ document.getElementById("productGrid").addEventListener(
 
     if (orderButton) {
       const product = findProduct(orderButton.dataset.order);
-
       if (!product) return;
 
       openWhatsApp(
-        "Hi, I am interested in " +
-        product.name +
+        "Hi, I am interested in " + product.name +
         " (" + money(product.price) + ")."
       );
     }
   }
 );
 
-// REMOVE ITEM FROM CART
 document.getElementById("cartItems").addEventListener(
-  "click",
-  event => {
+  "click", event => {
     const removeButton = event.target.closest("[data-remove]");
-
     if (!removeButton) return;
 
     delete cart[removeButton.dataset.remove];
-
     renderProducts();
     renderCart();
   }
 );
 
-// CHECKOUT ALL CART ITEMS
 document.getElementById("checkoutButton").addEventListener(
-  "click",
-  () => {
+  "click", () => {
     const entries = Object.entries(cart)
       .filter(([, quantity]) => quantity > 0);
 
@@ -743,29 +652,23 @@ document.getElementById("checkoutButton").addEventListener(
     const lines = entries.map(([id, quantity]) => {
       const product = findProduct(id);
 
-      return (
-        product.name +
-        " x " + quantity +
-        " = " + money(product.price * quantity)
-      );
+      return product.name + " x " + quantity +
+        " = " + money(product.price * quantity);
     });
 
     const total = entries.reduce((sum, [id, quantity]) => {
       const product = findProduct(id);
-
       return sum + product.price * quantity;
     }, 0);
 
-    const message =
+    openWhatsApp(
       "Hi, I would like to order:\n\n" +
       lines.join("\n") +
-      "\n\nTotal: " + money(total);
-
-    openWhatsApp(message);
+      "\n\nTotal: " + money(total)
+    );
   }
 );
 
-// INITIAL DISPLAY
 renderProducts();
 renderCart();
 </script>
