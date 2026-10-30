@@ -3,121 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nova Store</title>
+<title>Nova Store | Online Shopping</title>
 
 <style>
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: #f5f6fa;
-  color: #222;
+  background: #f5f7fb;
+  color: #172033;
 }
 
 header {
   background: #111827;
   color: white;
-  padding: 22px 6%;
+  padding: 18px 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .logo {
-  font-size: 27px;
+  font-size: 25px;
   font-weight: bold;
-  letter-spacing: 1px;
 }
 
-.subtitle {
-  color: #cbd5e1;
-  font-size: 13px;
-  margin-top: 5px;
-}
-
-.cart-count {
-  background: white;
-  color: #111827;
+.cart-badge {
+  background: #2563eb;
   padding: 10px 15px;
-  border-radius: 25px;
+  border-radius: 8px;
   font-weight: bold;
 }
 
 .hero {
-  padding: 50px 6%;
-  background: linear-gradient(120deg, #dbeafe, #f8fafc);
+  padding: 45px 5%;
+  background: linear-gradient(135deg, #172033, #2563eb);
+  color: white;
 }
 
 .hero h1 {
-  font-size: clamp(30px, 5vw, 46px);
-  margin: 0 0 12px;
+  font-size: clamp(28px, 5vw, 42px);
+  margin-bottom: 12px;
 }
 
 .hero p {
-  color: #4b5563;
   line-height: 1.6;
+  max-width: 550px;
 }
 
 main {
+  width: 90%;
   max-width: 1200px;
-  margin: auto;
-  padding: 30px 5%;
+  margin: 30px auto;
 }
 
-.toolbar {
+.search {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 16px;
+}
+
+.filters {
   display: flex;
   gap: 10px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
-  margin-bottom: 25px;
-}
-
-#search {
-  flex: 1;
-  min-width: 180px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
 }
 
 .filter {
-  padding: 11px 15px;
-  border: 1px solid #ddd;
-  border-radius: 25px;
+  padding: 10px 17px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   background: white;
   cursor: pointer;
 }
 
 .filter.active {
-  background: #111827;
+  background: #2563eb;
   color: white;
-}
-
-.heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.heading h2 {
-  margin: 0;
+  border-color: #2563eb;
 }
 
 #resultCount {
-  color: #666;
-  font-size: 14px;
+  margin-bottom: 18px;
+  color: #64748b;
 }
 
-.products {
+.grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
@@ -126,28 +109,24 @@ main {
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 15px #00000008;
+  box-shadow: 0 4px 15px rgba(0,0,0,.04);
 }
 
 .picture {
   height: 200px;
-  background: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  background: #f1f5f9;
+  font-size: 65px;
+  overflow: hidden;
 }
 
 .picture img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-}
-
-.icon {
-  font-size: 70px;
+  padding: 12px;
 }
 
 .details {
@@ -155,117 +134,181 @@ main {
 }
 
 .category {
-  color: #777;
   font-size: 12px;
-  text-transform: uppercase;
-  margin: 0 0 8px;
+  color: #64748b;
+  margin-bottom: 8px;
 }
 
 .details h3 {
   font-size: 18px;
-  margin: 0 0 10px;
+  margin-bottom: 10px;
 }
 
 .price {
   font-size: 20px;
   font-weight: bold;
-  margin: 0 0 15px;
+  margin-bottom: 16px;
 }
 
 .actions {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 button {
   font-family: inherit;
+  cursor: pointer;
 }
 
-.add, .whatsapp, .checkout, .remove {
-  padding: 10px 12px;
+.add, .whatsapp {
   border: none;
-  border-radius: 7px;
-  cursor: pointer;
+  border-radius: 8px;
+  padding: 11px 10px;
   font-weight: bold;
+  flex: 1;
+  font-size: 13px;
 }
 
 .add {
-  background: blue;
+  background: #2563eb;
   color: white;
+}
+
+.whatsapp {
+  background: #16a34a;
+  color: white;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   flex: 1;
+  background: #dcfce7;
+  border-radius: 8px;
+  padding: 5px;
 }
 
-.add.added {
-  background: #16a34a !important;
-  color: white !important;
-}
-
-.whatsapp, .checkout {
-  background: #15803d;
+.qty-btn {
+  border: none;
+  width: 30px;
+  height: 30px;
+  background: #16a34a;
   color: white;
+  border-radius: 6px;
+  font-size: 20px;
+}
+
+.qty-number {
+  font-weight: bold;
+  color: #166534;
 }
 
 .cart-box {
   background: white;
-  padding: 22px;
   border-radius: 14px;
+  padding: 22px;
   margin-top: 35px;
   border: 1px solid #e5e7eb;
 }
 
 .cart-box h2 {
-  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+#cartMessage {
+  color: #64748b;
+  margin-bottom: 15px;
+}
+
+#cartItems {
+  list-style: none;
 }
 
 #cartItems li {
-  margin: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 0;
 }
 
 .remove {
   background: #fee2e2;
-  color: #991b1b;
-  margin-left: 8px;
+  color: #b91c1c;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 6px;
 }
 
-.cart-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
-  border-top: 1px solid #eee;
-  padding-top: 15px;
+.total {
+  font-size: 21px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.checkout {
+  width: 100%;
+  padding: 14px;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .empty {
-  background: white;
   padding: 25px;
-  text-align: center;
+  background: white;
   border-radius: 10px;
-  grid-column: 1 / -1;
+  text-align: center;
 }
 
 footer {
   text-align: center;
   padding: 25px;
-  color: #777;
-  font-size: 13px;
+  margin-top: 35px;
+  background: #111827;
+  color: white;
 }
 
-@media (max-width: 800px) {
-  .products {
+@media (max-width: 480px) {
+  main {
+    width: 92%;
+  }
+
+  .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .products {
-    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
-  .hero {
-    padding: 35px 6%;
+  .picture {
+    height: 145px;
+  }
+
+  .details {
+    padding: 11px;
+  }
+
+  .details h3 {
+    font-size: 15px;
+  }
+
+  .price {
+    font-size: 17px;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+
+  .whatsapp {
+    flex-basis: 100%;
   }
 }
 </style>
@@ -274,73 +317,107 @@ footer {
 <body>
 
 <header>
-  <div>
-    <div class="logo">NOVA STORE</div>
-    <div class="subtitle">Your Everyday Shopping Destination</div>
-  </div>
-
-  <div class="cart-count">
+  <div class="logo">Nova Store</div>
+  <div class="cart-badge">
     🛒 Cart: <span id="cartCount">0</span>
   </div>
 </header>
 
 <section class="hero">
-  <h1>Shop Your Everyday Essentials</h1>
-  <p>
-    Explore our featured products and enjoy a simple shopping experience.
-    This is a demo store created for a website portfolio.
-  </p>
+  <h1>Welcome to Nova Store</h1>
+  <p>Discover everyday essentials at affordable prices. Choose your products, adjust quantities and send your order through WhatsApp.</p>
 </section>
 
 <main>
+  <input
+    id="search"
+    class="search"
+    type="search"
+    placeholder="Search products..."
+    aria-label="Search products"
+  >
 
-  <div class="toolbar">
-    <input type="search" id="search"
-      placeholder="Search products...">
-
+  <div class="filters">
     <button class="filter active" data-category="All">All</button>
     <button class="filter" data-category="Electronics">Electronics</button>
     <button class="filter" data-category="Accessories">Accessories</button>
   </div>
 
-  <div class="heading">
-    <h2>Featured Products</h2>
-    <span id="resultCount">6 products</span>
-  </div>
-
-  <section class="products" id="productGrid"></section>
+  <p id="resultCount"></p>
+  <div class="grid" id="productGrid"></div>
 
   <section class="cart-box">
     <h2>Your Shopping Cart</h2>
     <p id="cartMessage">Your cart is empty.</p>
     <ul id="cartItems"></ul>
-
-    <div class="cart-footer">
-      <strong>Total: <span id="cartTotal">Rs. 0</span></strong>
-      <button class="checkout" id="checkoutButton">
-        Order via WhatsApp
-      </button>
-    </div>
+    <p class="total">Total: <span id="cartTotal">Rs. 0</span></p>
+    <button class="checkout" id="checkoutButton">
+      Order via WhatsApp
+    </button>
   </section>
-
 </main>
 
 <footer>
-  Nova Store Demo · Sample products and prices
+  <p>© 2026 Nova Store. All rights reserved.</p>
 </footer>
 
 <script>
 const products = [
-  {id:1,name:"Wireless Headphones",price:2499,category:"Electronics",icon:"🎧",image:"images.jpg"},
-  {id:2,name:"Smart Watch",price:3499,category:"Electronics",icon:"⌚",image:""},
-  {id:3,name:"Everyday Backpack",price:1799,category:"Accessories",icon:"🎒",image:""},
-  {id:4,name:"Portable Speaker",price:1999,category:"Electronics",icon:"🔊",image:""},
-  {id:5,name:"Travel Bottle",price:799,category:"Accessories",icon:"🧴",image:""},
-  {id:6,name:"Phone Accessories",price:999,category:"Accessories",icon:"📱",image:""}
+  {
+    id: 1,
+    name: "Wireless Headphones",
+    price: 2499,
+    category: "Electronics",
+    icon: "🎧",
+    image: "images.jpg"
+  },
+  {
+    id: 2,
+    name: "Smart Watch",
+    price: 3499,
+    category: "Electronics",
+    icon: "⌚",
+    image: ""
+  },
+  {
+    id: 3,
+    name: "Everyday Backpack",
+    price: 1799,
+    category: "Accessories",
+    icon: "🎒",
+    image: ""
+  },
+  {
+    id: 4,
+    name: "Portable Speaker",
+    price: 1999,
+    category: "Electronics",
+    icon: "🔊",
+    image: ""
+  },
+  {
+    id: 5,
+    name: "Travel Bottle",
+    price: 799,
+    category: "Accessories",
+    icon: "🧴",
+    image: ""
+  },
+  {
+    id: 6,
+    name: "Phone Accessories",
+    price: 999,
+    category: "Accessories",
+    icon: "📱",
+    image: ""
+  }
 ];
 
-let activeCategory = "All";
 const cart = {};
+let activeCategory = "All";
+
+// Pakistan WhatsApp number
+const whatsappNumber = "923362567984";
 
 function money(amount) {
   return "Rs. " + amount.toLocaleString("en-PK");
@@ -349,217 +426,19 @@ function money(amount) {
 function renderPicture(product) {
   if (product.image) {
     return `
-      <img src="${product.image}" alt="${product.name}"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <span class="icon" style="display:none">${product.icon}</span>
+      <img
+        src="${product.image}"
+        alt="${product.name}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+      >
+      <span style="display:none">${product.icon}</span>
     `;
   }
-  return `<span class="icon">${product.icon}</span>`;
+
+  return `<span>${product.icon}</span>`;
 }
-
-function renderProducts() {
-  const searchText = document.getElementById("search")
-    .value.trim().toLowerCase();
-
-  const filtered = products.filter(product => {
-    const categoryMatch =
-      activeCategory === "All" ||
-      product.category === activeCategory;
-
-    const searchMatch =
-      product.name.toLowerCase().includes(searchText) ||
-      product.category.toLowerCase().includes(searchText);
-
-    return categoryMatch && searchMatch;
-  });
-
-  document.getElementById("resultCount").textContent =
-    filtered.length + " products";
-
-  const grid = document.getElementById("productGrid");
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div class="empty">No products found. Try another search.</div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(product => `
-    <article class="card">
-      <div class="picture">${renderPicture(product)}</div>
-
-      <div class="details">
-        <p class="category">${product.category}</p>
-        <h3>${product.name}</h3>
-        <p class="price">${money(product.price)}</p>
-
-        <div class="actions">
-          <button class="add ${cart[product.id] > 0 ? "added" : ""}"
-            data-add="${product.id}">
-            ${cart[product.id] > 0 ? "Added ✓" : "Add to Cart"}
-          </button>
-
-          <button class="whatsapp" data-order="${product.id}">
-            WhatsApp
-          </button>
-        </div>
-      </div>
-    </article>
-  `).join("");
-}
-
-function renderCart() {
-  const entries = Object.entries(cart)
-    .filter(([, quantity]) => quantity > 0);
-
-  const count = entries.reduce(
-    (sum, [, quantity]) => sum + quantity, 0
-  );
-
-  const total = entries.reduce((sum, [id, quantity]) => {
-    const product = products.find(
-      item => item.id === Number(id)
-    );
-    return sum + product.price * quantity;
-  }, 0);
-
-  document.getElementById("cartCount").textContent = count;
-  document.getElementById("cartTotal").textContent = money(total);
-
-  document.getElementById("cartMessage").textContent =
-    entries.length ? "Review your items below." : "Your cart is empty.";
-
-  document.getElementById("cartItems").innerHTML =
-    entries.map(([id, quantity]) => {
-      const product = products.find(
-        item => item.id === Number(id)
-      );
-
-      return `
-        <li>
-          ${product.name} × ${quantity}
-          — ${money(product.price * quantity)}
-          <button class="remove" data-remove="${id}">
-            Remove
-          </button>
-        </li>
-      `;
-    }).join("");
-}
-
-// Replace with your own WhatsApp number.
-// Country code included, without +.
-const whatsappNumber = "923001234567";
 
 function openWhatsApp(message) {
-  const url = "https://wa.me/" + whatsappNumber +
-    "?text=" + encodeURIComponent(message);
-
-  window.open(url, "_blank", "noopener,noreferrer");
-}
-
-document.getElementById("search").addEventListener(
-  "input", renderProducts
-);
-
-document.querySelectorAll(".filter").forEach(button => {
-  button.addEventListener("click", () => {
-    activeCategory = button.dataset.category;
-
-    document.querySelectorAll(".filter").forEach(item => {
-      item.classList.toggle("active", item === button);
-    });
-
-    renderProducts();
-  });
-});
-
-// Product grid click handler
-document.getElementById("productGrid").addEventListener(
-  "click",
-  event => {
-    const addButton = event.target.closest("[data-add]");
-    const orderButton = event.target.closest("[data-order]");
-
-    if (addButton) {
-      const id = addButton.dataset.add;
-      cart[id] = (cart[id] || 0) + 1;
-
-      renderProducts();
-      renderCart();
-      return;
-    }
-
-    if (orderButton) {
-      const product = products.find(
-        item => item.id === Number(orderButton.dataset.order)
-      );
-
-      if (!product) return;
-
-      openWhatsApp(
-        "Hi, I am interested in " +
-        product.name + " (" + money(product.price) + ")."
-      );
-    }
-  }
-);
-
-// Remove product handler
-document.getElementById("cartItems").addEventListener(
-  "click",
-  event => {
-    const removeButton = event.target.closest("[data-remove]");
-
-    if (!removeButton) return;
-
-    delete cart[removeButton.dataset.remove];
-
-    renderProducts();
-    renderCart();
-  }
-);
-
-// Checkout handler
-document.getElementById("checkoutButton").addEventListener(
-  "click",
-  () => {
-    const entries = Object.entries(cart)
-      .filter(([, quantity]) => quantity > 0);
-
-    if (entries.length === 0) {
-      alert("Your cart is empty. Add a product first.");
-      return;
-    }
-
-    const lines = entries.map(([id, quantity]) => {
-      const product = products.find(
-        item => item.id === Number(id)
-      );
-
-      return product.name + " x " + quantity +
-        " = " + money(product.price * quantity);
-    });
-
-    const total = entries.reduce((sum, [id, quantity]) => {
-      const product = products.find(
-        item => item.id === Number(id)
-      );
-      return sum + product.price * quantity;
-    }, 0);
-
-    openWhatsApp(
-      "Hi, I would like to order:\n" +
-      lines.join("\n") +
-      "\nTotal: " + money(total)
-    );
-  }
-);
-
-renderProducts();
-renderCart();
-</script>
-
-</body>
-</html>
+  const url =
+    "https://wa.me/" +
+    whatsappNumber +
