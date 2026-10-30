@@ -267,6 +267,7 @@ button {
   background: white;
   border-radius: 10px;
   text-align: center;
+  grid-column: 1 / -1;
 }
 
 footer {
@@ -307,6 +308,10 @@ footer {
     flex-wrap: wrap;
   }
 
+  .quantity-control {
+    min-width: 100%;
+  }
+
   .whatsapp {
     flex-basis: 100%;
   }
@@ -318,6 +323,7 @@ footer {
 
 <header>
   <div class="logo">Nova Store</div>
+
   <div class="cart-badge">
     🛒 Cart: <span id="cartCount">0</span>
   </div>
@@ -325,10 +331,15 @@ footer {
 
 <section class="hero">
   <h1>Welcome to Nova Store</h1>
-  <p>Discover everyday essentials at affordable prices. Choose your products, adjust quantities and send your order through WhatsApp.</p>
+  <p>
+    Discover everyday essentials at affordable prices.
+    Choose your products, adjust quantities and send your
+    order through WhatsApp.
+  </p>
 </section>
 
 <main>
+
   <input
     id="search"
     class="search"
@@ -344,17 +355,25 @@ footer {
   </div>
 
   <p id="resultCount"></p>
+
   <div class="grid" id="productGrid"></div>
 
   <section class="cart-box">
     <h2>Your Shopping Cart</h2>
+
     <p id="cartMessage">Your cart is empty.</p>
+
     <ul id="cartItems"></ul>
-    <p class="total">Total: <span id="cartTotal">Rs. 0</span></p>
+
+    <p class="total">
+      Total: <span id="cartTotal">Rs. 0</span>
+    </p>
+
     <button class="checkout" id="checkoutButton">
       Order via WhatsApp
     </button>
   </section>
+
 </main>
 
 <footer>
@@ -362,6 +381,9 @@ footer {
 </footer>
 
 <script>
+"use strict";
+
+// PRODUCT DATA
 const products = [
   {
     id: 1,
@@ -413,23 +435,34 @@ const products = [
   }
 ];
 
+// SHOPPING CART
 const cart = {};
 let activeCategory = "All";
 
-// Pakistan WhatsApp number
+// WhatsApp number in international format
 const whatsappNumber = "923362567984";
 
+// FORMAT PRICE
 function money(amount) {
   return "Rs. " + amount.toLocaleString("en-PK");
 }
 
+// FIND PRODUCT
+function findProduct(id) {
+  return products.find(product => product.id === Number(id));
+}
+
+// PRODUCT IMAGE OR FALLBACK ICON
 function renderPicture(product) {
   if (product.image) {
     return `
       <img
         src="${product.image}"
         alt="${product.name}"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
+        onerror="
+          this.style.display='none';
+          this.nextElementSibling.style.display='block';
+        "
       >
       <span style="display:none">${product.icon}</span>
     `;
@@ -438,7 +471,304 @@ function renderPicture(product) {
   return `<span>${product.icon}</span>`;
 }
 
+// DISPLAY PRODUCTS
+function renderProducts() {
+  const searchInput = document.getElementById("search");
+  const searchText = searchInput.value.trim().toLowerCase();
+
+  const filtered = products.filter(product => {
+    const categoryMatch =
+      activeCategory === "All" ||
+      product.category === activeCategory;
+
+    const searchMatch =
+      product.name.toLowerCase().includes(searchText) ||
+      product.category.toLowerCase().includes(searchText);
+
+    return categoryMatch && searchMatch;
+  });
+
+  document.getElementById("resultCount").textContent =
+    filtered.length + (filtered.length === 1 ? " product" : " products");
+
+  const grid = document.getElementById("productGrid");
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty">
+        No products found. Try another search.
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(product => {
+    const quantity = cart[product.id] || 0;
+
+    return `
+      <article class="card">
+
+        <div class="picture">
+          ${renderPicture(product)}
+        </div>
+
+        <div class="details">
+
+          <p class="category">${product.category}</p>
+
+          <h3>${product.name}</h3>
+
+          <p class="price">${money(product.price)}</p>
+
+          <div class="actions">
+
+            ${
+              quantity === 0
+                ? `
+                  <button
+                    class="add"
+                    data-add="${product.id}"
+                  >
+                    Add to Cart
+                  </button>
+                `
+                : `
+                  <div class="quantity-control">
+
+                    <button
+                      class="qty-btn"
+                      data-minus="${product.id}"
+                      aria-label="Decrease quantity"
+                    >−</button>
+
+                    <span class="qty-number">${quantity}</span>
+
+                    <button
+                      class="qty-btn"
+                      data-plus="${product.id}"
+                      aria-label="Increase quantity"
+                    >+</button>
+
+                  </div>
+                `
+            }
+
+            <button
+              class="whatsapp"
+              data-order="${product.id}"
+            >
+              WhatsApp
+            </button>
+
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+// DISPLAY CART
+function renderCart() {
+  const entries = Object.entries(cart)
+    .filter(([, quantity]) => quantity > 0);
+
+  const count = entries.reduce(
+    (sum, [, quantity]) => sum + quantity,
+    0
+  );
+
+  const total = entries.reduce((sum, [id, quantity]) => {
+    const product = findProduct(id);
+
+    return product
+      ? sum + product.price * quantity
+      : sum;
+  }, 0);
+
+  document.getElementById("cartCount").textContent = count;
+
+  document.getElementById("cartTotal").textContent =
+    money(total);
+
+  document.getElementById("cartMessage").textContent =
+    entries.length
+      ? "Review your items below."
+      : "Your cart is empty.";
+
+  document.getElementById("cartItems").innerHTML =
+    entries.map(([id, quantity]) => {
+      const product = findProduct(id);
+
+      if (!product) return "";
+
+      return `
+        <li>
+          <span>
+            ${product.name} × ${quantity}
+            — ${money(product.price * quantity)}
+          </span>
+
+          <button
+            class="remove"
+            data-remove="${id}"
+          >
+            Remove
+          </button>
+        </li>
+      `;
+    }).join("");
+}
+
+// OPEN WHATSAPP
 function openWhatsApp(message) {
   const url =
     "https://wa.me/" +
     whatsappNumber +
+    "?text=" +
+    encodeURIComponent(message);
+
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+// ADD ONE ITEM
+function addToCart(id) {
+  const product = findProduct(id);
+
+  if (!product) return;
+
+  cart[id] = (cart[id] || 0) + 1;
+
+  renderProducts();
+  renderCart();
+}
+
+// DECREASE ONE ITEM
+function decreaseQuantity(id) {
+  if (!cart[id]) return;
+
+  cart[id]--;
+
+  if (cart[id] <= 0) {
+    delete cart[id];
+  }
+
+  renderProducts();
+  renderCart();
+}
+
+// SEARCH PRODUCTS
+document.getElementById("search").addEventListener(
+  "input",
+  renderProducts
+);
+
+// CATEGORY FILTERS
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    activeCategory = button.dataset.category;
+
+    document.querySelectorAll(".filter").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+
+    renderProducts();
+  });
+});
+
+// PRODUCT BUTTONS
+document.getElementById("productGrid").addEventListener(
+  "click",
+  event => {
+    const addButton = event.target.closest("[data-add]");
+    const plusButton = event.target.closest("[data-plus]");
+    const minusButton = event.target.closest("[data-minus]");
+    const orderButton = event.target.closest("[data-order]");
+
+    if (addButton) {
+      addToCart(addButton.dataset.add);
+      return;
+    }
+
+    if (plusButton) {
+      addToCart(plusButton.dataset.plus);
+      return;
+    }
+
+    if (minusButton) {
+      decreaseQuantity(minusButton.dataset.minus);
+      return;
+    }
+
+    if (orderButton) {
+      const product = findProduct(orderButton.dataset.order);
+
+      if (!product) return;
+
+      openWhatsApp(
+        "Hi, I am interested in " +
+        product.name +
+        " (" + money(product.price) + ")."
+      );
+    }
+  }
+);
+
+// REMOVE ITEM FROM CART
+document.getElementById("cartItems").addEventListener(
+  "click",
+  event => {
+    const removeButton = event.target.closest("[data-remove]");
+
+    if (!removeButton) return;
+
+    delete cart[removeButton.dataset.remove];
+
+    renderProducts();
+    renderCart();
+  }
+);
+
+// CHECKOUT ALL CART ITEMS
+document.getElementById("checkoutButton").addEventListener(
+  "click",
+  () => {
+    const entries = Object.entries(cart)
+      .filter(([, quantity]) => quantity > 0);
+
+    if (entries.length === 0) {
+      alert("Your cart is empty. Add a product first.");
+      return;
+    }
+
+    const lines = entries.map(([id, quantity]) => {
+      const product = findProduct(id);
+
+      return (
+        product.name +
+        " x " + quantity +
+        " = " + money(product.price * quantity)
+      );
+    });
+
+    const total = entries.reduce((sum, [id, quantity]) => {
+      const product = findProduct(id);
+
+      return sum + product.price * quantity;
+    }, 0);
+
+    const message =
+      "Hi, I would like to order:\n\n" +
+      lines.join("\n") +
+      "\n\nTotal: " + money(total);
+
+    openWhatsApp(message);
+  }
+);
+
+// INITIAL DISPLAY
+renderProducts();
+renderCart();
+</script>
+
+</body>
+</html>
